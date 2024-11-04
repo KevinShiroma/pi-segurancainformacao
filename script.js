@@ -4,19 +4,21 @@ document.getElementById('captureForm').addEventListener('submit', function(event
     const email = document.getElementById('email').value;
     const password = document.getElementById('password').value;
 
-    // Aqui você pode enviar os dados para um servidor ou endpoint
-    // Exemplo de um objeto para envio
-    const data = { email: email, password: password };
+    // Enviar dados usando fetch para o script PHP
+    const formData = new URLSearchParams();
+    formData.append('email', email);
+    formData.append('password', password);
 
-    // Exemplo de envio usando fetch para um endpoint fictício
-    fetch('https://seu-endpoint-api.com/captura', {
+    fetch('insert.php', {
         method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data),
+        body: formData,
     })
-    .then(response => response.json())
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Erro na resposta da rede');
+        }
+        return response.text(); // ou response.json() se o PHP retornar JSON
+    })
     .then(data => {
         document.getElementById('responseMessage').textContent = 'Dados enviados com sucesso!';
     })
