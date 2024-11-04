@@ -1,29 +1,29 @@
-document.getElementById('captureForm').addEventListener('submit', function(event) {
-    event.preventDefault(); // Impede o envio padrão do formulário
+document.getElementById("loginForm").addEventListener("submit", function(event) {
+    event.preventDefault(); // Evita o envio do formulário padrão
 
-    const email = document.getElementById('email').value;
-    const password = document.getElementById('password').value;
+    const email = event.target.email.value;
+    const password = event.target.password.value;
 
-    // Enviar dados usando fetch para o script PHP
-    const formData = new URLSearchParams();
-    formData.append('email', email);
-    formData.append('password', password);
+    // Validação básica
+    if (email === "" || password === "") {
+        displayMessage("Por favor, preencha todos os campos.");
+    } else {
+        // Simulação de envio de dados
+        displayMessage("Formulário enviado com sucesso!");
+        // Aqui você poderia fazer uma chamada AJAX para enviar os dados para o servidor
+    }
 
-    fetch('insert.php', {
-        method: 'POST',
-        body: formData,
-    })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error('Erro na resposta da rede');
-        }
-        return response.text(); // ou response.json() se o PHP retornar JSON
-    })
-    .then(data => {
-        document.getElementById('responseMessage').textContent = 'Dados enviados com sucesso!';
-    })
-    .catch(error => {
-        console.error('Erro:', error);
-        document.getElementById('responseMessage').textContent = 'Ocorreu um erro ao enviar os dados.';
-    });
+    // Limpa os campos após a submissão
+    event.target.reset();
 });
+
+function displayMessage(msg) {
+    const messageDiv = document.getElementById("message");
+    messageDiv.textContent = msg;
+    messageDiv.classList.remove("hidden");
+
+    // Oculta a mensagem após 3 segundos
+    setTimeout(() => {
+        messageDiv.classList.add("hidden");
+    }, 3000);
+}

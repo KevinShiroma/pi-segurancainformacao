@@ -3,62 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Captura de Dados</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-        }
-        #responseMessage {
-            margin-top: 20px;
-            font-weight: bold;
-        }
-    </style>
+    <title>Formulário de Login</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-    <h1>Inscrição</h1>
-    <form id="captureForm">
-        <label for="email">E-mail:</label><br>
-        <input type="email" id="email" required><br><br>
-        <label for="password">Senha:</label><br>
-        <input type="password" id="password" required><br><br>
-        <input type="submit" value="Inscrever">
+<div class="login-form">
+    <h2>Login</h2>
+    <form id="loginForm" action="insert.php" method="POST">
+        <input type="email" name="email" placeholder="E-mail" required>
+        <input type="password" name="password" placeholder="password" required>
+        <button type="submit">Entrar</button>
     </form>
+    <div id="message" class="hidden"></div>
+</div>
 
-    <div id="responseMessage"></div>
-
-    <script>
-        document.getElementById('captureForm').addEventListener('submit', function(event) {
-            event.preventDefault(); // Impede o envio padrão do formulário
-
-            const email = document.getElementById('email').value;
-            const password = document.getElementById('password').value;
-
-            // Enviar dados usando fetch para o script PHP
-            const formData = new URLSearchParams();
-            formData.append('email', email);
-            formData.append('password', password);
-
-            fetch('insert.php', {
-                method: 'POST',
-                body: formData,
-            })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Erro na resposta da rede');
-                }
-                return response.json(); // Esperamos que o PHP retorne um JSON
-            })
-            .then(data => {
-                document.getElementById('responseMessage').textContent = data.message || data.error;
-            })
-            .catch(error => {
-                console.error('Erro:', error);
-                document.getElementById('responseMessage').textContent = 'Ocorreu um erro ao enviar os dados.';
-            });
-        });
-    </script>
-
+<script src="script.js"></script>
 </body>
 </html>

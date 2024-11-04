@@ -5,50 +5,30 @@ $username = "piadmin";
 $password = "admin123!";
 $dbname = "usuarios";
 
-// Habilitar exibição de erros
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
-
-// Criar conexão
+// Cria a conexão
 $conn = new mysqli($servername, $username, $password, $dbname);
 
-// Verificar conexão
+// Verifica a conexão
 if ($conn->connect_error) {
-    die(json_encode(['error' => "Conexão falhou: " . $conn->connect_error]));
+    die("Conexão falhou: " . $conn->connect_error);
 }
 
-// Definir o cabeçalho para JSON
-header('Content-Type: application/json');
+// Recebe os dados do formulário
+$email = $_POST['email'];
+$password = $_POST['password'];
 
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // Obter dados do formulário
-    $email = $_POST['email'];
-    $password = $_POST['password'];
-    
-    // Hash da senha
-    $hashed_password = password_hash($password, PASSWORD_DEFAULT); 
+// Prepara e vincula
+$stmt = $conn->prepare("INSERT INTO usuarios (email, password) VALUES (?, ?)");
+$stmt->bind_param("ss", $email, $password);
 
-    // Preparar e vincular
-    $stmt = $conn->prepare("INSERT INTO usuarios (email, password) VALUES (?, ?)");
-    
-    if (!$stmt) {
-        die(json_encode(['error' => "Erro na preparação da declaração: " . $conn->error]));
-    }
-
-    $stmt->bind_param("ss", $email, $hashed_password);
-
-    // Executar a consulta
-    if ($stmt->execute()) {
-        echo json_encode(['message' => 'Dados inseridos com sucesso!']);
-    } else {
-        echo json_encode(['error' => 'Erro ao inserir dados: ' . $stmt->error]);
-    }
-
-    // Fechar a declaração
-    $stmt->close();
+// Executa a consulta
+if ($stmt->execute()) {
+    echo "Novo registro criado com sucesso.";
+} else {
+    echo "Erro: " . $stmt->error;
 }
 
-// Fechar conexão
+// Fecha a conexão
+$stmt->close();
 $conn->close();
 ?>
